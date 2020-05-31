@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "mpc.h"
 
 #ifdef _WIN32
 #include <string.h>
@@ -25,6 +26,21 @@ void add_history(char* history) {}
 #include <editline/history.h>
 #endif
 #endif  
+
+// create parsers
+mpc_parser_t* Number = mpc_new("number");
+mpc_parser_t* Operator = mpc_new("operator");
+mpc_parser_t* Expr = mpc_new("expr");
+mpc_parser_t* Lispy = mpc_new("lispy");
+
+
+
+
+
+
+
+
+
 
 int main(int argc, char **argv) {
   // print version information
