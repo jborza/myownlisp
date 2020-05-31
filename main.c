@@ -30,11 +30,17 @@ void add_history(char *history) {}
 typedef struct {
   int type;
   long num;
-  int err;
+  //error and symbol data
+  char* err;
+  char* sym;
+
+  // cells
+  int cell_count;
+  struct lval** cells;
 } lval;
 
 // possible lval types
-enum { LVAL_NUM, LVAL_ERR };
+enum { LVAL_ERR, LVAL_NUM, LVAL_SYM, LVAL_SEXPR };
 
 // possible error types
 enum { LERR_DIV_ZERO, LERR_BAD_OP, LERR_BAD_NUM };
@@ -130,18 +136,20 @@ lval eval(mpc_ast_t *t) {
 int main(int argc, char **argv) {
   // create parsers
   mpc_parser_t *Number = mpc_new("number");
-  mpc_parser_t *Operator = mpc_new("operator");
+  mpc_parser_t *Symbol = mpc_new("symbol");
+  mpc_parser_t *Sexpr = mpc_new("sexpr");
   mpc_parser_t *Expr = mpc_new("expr");
   mpc_parser_t *Lispy = mpc_new("lispy");
   // define parsers
   mpca_lang(MPCA_LANG_DEFAULT,
-            "                                                     \
-          number   : /-?[0-9]+/ ;                             \
-          operator : '+' | '-' | '*' | '/' ;                  \
-          expr     : <number> | '(' <operator> <expr>+ ')' ;  \
-          lispy    : /^/ <operator> <expr>+ /$/ ;             \
+            "                                         \
+          number   : /-?[0-9]+/ ;                     \
+          symbol   : '+' | '-' | '*' | '/' ;          \
+          sexpr    : '(' <expr>* ')' ;                \
+          expr     : <number> | <symbol> | <sexpr> ;  \
+          lispy    : /^/ <expr>* /$/ ;     \
           ",
-            Number, Operator, Expr, Lispy);
+            Number, Symbol, Sexpr, Expr, Lispy);
 
   // print version information
   puts("mylisp 0.1");
@@ -174,5 +182,5 @@ int main(int argc, char **argv) {
     free(input);
   }
   // clean up parsers
-  mpc_cleanup(4, Number, Operator, Expr, Lispy);
+  mpc_cleanup(5, Number, Symbol, Sexpr , Expr, Lispy);
 }
