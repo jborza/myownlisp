@@ -66,7 +66,8 @@ int main(int argc, char **argv) {
     }
 
     // clean up
-    mpc_cleanup(4, Number, Operator, Expr, Lispy);
     free(input);
   }
+  // clean up parsers
+  mpc_cleanup(4, Number, Operator, Expr, Lispy);
 }
