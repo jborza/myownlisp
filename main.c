@@ -191,7 +191,7 @@ lval* lval_read(mpc_ast_t *t) {
   if (strcmp(t->tag, ">") == 0) {
     x = lval_sexpr();
   }
-  if (strcmp(t->tag, "sexpr") == 0) {
+  if (strstr(t->tag, "sexpr")) {
     x = lval_sexpr();
   }
 
@@ -199,7 +199,7 @@ lval* lval_read(mpc_ast_t *t) {
   for (int i = 0; i < t->children_num; i++) {
     // skip over parentheses
     if ((strcmp(t->children[i]->contents, "(") == 0) ||
-        (strcmp(t->children[i]->contents, "(") == 0)) {
+        (strcmp(t->children[i]->contents, ")") == 0)) {
       continue;
     }
     if (strcmp(t->children[i]->tag, "regex") == 0) {
